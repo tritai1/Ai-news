@@ -1,0 +1,618 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>AI News Agent</title>
+
+<style>
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+}
+
+:root{
+--bg:#0f1115;
+--sidebar:#171a21;
+--panel:#1e222b;
+--panel2:#262b36;
+--text:#e8e8e8;
+--muted:#9da4b5;
+--accent:#4b8dff;
+--user:#2f6fed;
+--bot:#2c313c;
+--border:#313744;
+}
+
+body{
+height:100vh;
+font-family:Inter,Segoe UI,sans-serif;
+background:var(--bg);
+color:var(--text);
+display:flex;
+overflow:hidden;
+}
+
+/* Sidebar */
+
+.sidebar{
+width:290px;
+background:var(--sidebar);
+border-right:1px solid var(--border);
+display:flex;
+flex-direction:column;
+}
+
+.logo{
+padding:22px;
+font-size:22px;
+font-weight:700;
+border-bottom:1px solid var(--border);
+}
+
+.new-chat{
+margin:18px;
+padding:14px;
+border-radius:14px;
+background:var(--accent);
+cursor:pointer;
+font-weight:600;
+text-align:center;
+transition:.2s;
+}
+
+.new-chat:hover{
+transform:translateY(-2px);
+}
+
+.history-title{
+padding:0 18px;
+color:var(--muted);
+font-size:13px;
+margin-bottom:12px;
+}
+
+.history{
+flex:1;
+overflow:auto;
+padding:0 12px 20px;
+}
+
+.chat-item{
+background:var(--panel);
+padding:14px;
+margin-bottom:12px;
+border-radius:14px;
+cursor:pointer;
+transition:.2s;
+border:1px solid transparent;
+}
+
+.chat-item:hover{
+border-color:var(--accent);
+background:var(--panel2);
+}
+
+.chat-item .title{
+font-weight:600;
+margin-bottom:6px;
+}
+
+.chat-item .meta{
+font-size:12px;
+color:var(--muted);
+}
+
+/* Main */
+
+.main{
+flex:1;
+display:flex;
+flex-direction:column;
+}
+
+/* Header */
+
+.header{
+height:70px;
+display:flex;
+align-items:center;
+justify-content:space-between;
+padding:0 30px;
+background:#13161c;
+border-bottom:1px solid var(--border);
+}
+
+.header h2{
+font-size:20px;
+}
+
+/* Chat */
+
+#chat-container{
+flex:1;
+overflow:auto;
+padding:35px max(8vw,40px);
+display:flex;
+flex-direction:column;
+gap:24px;
+}
+
+.message-wrap{
+display:flex;
+width:100%;
+}
+
+.message{
+max-width:760px;
+padding:18px 22px;
+border-radius:20px;
+line-height:1.7;
+font-size:15px;
+box-shadow:0 2px 12px rgba(0,0,0,.2);
+}
+
+.user-wrap{
+justify-content:flex-end;
+}
+
+.user{
+background:var(--user);
+border-bottom-right-radius:6px;
+}
+
+.ai{
+background:var(--bot);
+border-bottom-left-radius:6px;
+}
+
+.sources{
+margin-top:14px;
+padding-top:12px;
+border-top:1px solid #555;
+}
+
+.sources a{
+display:block;
+margin-top:7px;
+color:#77a8ff;
+text-decoration:none;
+}
+
+.sources a:hover{
+text-decoration:underline;
+}
+
+.typing{
+color:#aaa;
+font-style:italic;
+animation:pulse 1.2s infinite;
+}
+
+@keyframes pulse{
+50%{opacity:.45;}
+}
+
+/* Input */
+
+.input-box{
+padding:25px 40px;
+background:#13161c;
+border-top:1px solid var(--border);
+}
+
+.input-wrap{
+max-width:950px;
+margin:auto;
+display:flex;
+gap:15px;
+background:var(--panel);
+padding:14px;
+border-radius:18px;
+border:1px solid var(--border);
+}
+
+input{
+flex:1;
+background:transparent;
+border:none;
+outline:none;
+color:white;
+font-size:15px;
+}
+
+button{
+background:var(--accent);
+border:none;
+padding:12px 24px;
+border-radius:12px;
+font-weight:600;
+cursor:pointer;
+}
+
+button:hover{
+opacity:.92;
+}
+
+@media(max-width:900px){
+.sidebar{
+display:none;
+}
+#chat-container{
+padding:20px;
+}
+}
+</style>
+</head>
+
+<body>
+
+<!-- Sidebar -->
+<div class="sidebar">
+
+<div class="logo">
+🧠 AI News Agent
+</div>
+
+<div class="new-chat" onclick="newChat()">
++ Cuộc hội thoại mới
+</div>
+
+<div class="history-title">
+LỊCH SỬ HỘI THOẠI
+</div>
+
+<div class="history" id="history-list">
+</div>
+
+</div>
+
+<!-- Main -->
+<div class="main">
+
+<div class="header">
+<h2 id="chatTitle">
+Hội thoại mới
+</h2>
+<div>
+Realtime News RAG
+</div>
+</div>
+
+<div id="chat-container">
+
+</div>
+
+<div class="input-box">
+<div class="input-wrap">
+<input
+id="user-input"
+placeholder="Hỏi tin tức, xu hướng AI, sự kiện..."
+onkeypress="handleKeyPress(event)"
+>
+<button onclick="sendMessage()">
+Gửi
+</button>
+</div>
+</div>
+
+</div>
+
+
+<script>
+
+const chatContainer=
+document.getElementById(
+'chat-container'
+);
+
+let chats=
+JSON.parse(
+localStorage.getItem("chat_sessions")
+)||[];
+
+let currentChatId=null;
+
+
+
+function createWelcome(){
+appendMessage(
+'ai',
+'Xin chào, tôi là AI News Agent. Hỏi tôi tin tức hoặc tiếp tục hội thoại cũ.'
+);
+}
+
+function newChat(){
+
+currentChatId=
+Date.now();
+
+let chat={
+id:currentChatId,
+title:"Cuộc trò chuyện mới",
+messages:[]
+};
+
+chats.unshift(chat);
+
+saveChats();
+
+renderHistory();
+
+chatContainer.innerHTML='';
+createWelcome();
+
+document.getElementById(
+'chatTitle'
+).innerText=
+"Cuộc hội thoại mới";
+}
+
+
+function saveChats(){
+localStorage.setItem(
+"chat_sessions",
+JSON.stringify(chats)
+);
+}
+
+function renderHistory(){
+
+const box=
+document.getElementById(
+'history-list'
+);
+
+box.innerHTML='';
+
+chats.forEach(chat=>{
+
+box.innerHTML+=`
+<div class='chat-item'
+onclick='loadChat(${chat.id})'>
+<div class='title'>
+${chat.title}
+</div>
+<div class='meta'>
+${chat.messages.length} tin nhắn
+</div>
+</div>
+`;
+
+});
+
+}
+
+
+function loadChat(id){
+
+currentChatId=id;
+
+const chat=
+chats.find(
+c=>c.id===id
+);
+
+chatContainer.innerHTML='';
+
+document.getElementById(
+'chatTitle'
+).innerText=
+chat.title;
+
+chat.messages.forEach(
+m=>{
+appendMessage(
+m.role,
+m.content
+);
+}
+);
+
+}
+
+
+function updateCurrentChat(
+role,
+content
+){
+
+if(!currentChatId){
+newChat();
+}
+
+let chat=
+chats.find(
+c=>c.id===currentChatId
+);
+
+if(
+chat.title==="Cuộc trò chuyện mới"
+&& role==="user"
+){
+chat.title=
+content.slice(0,35);
+}
+
+chat.messages.push({
+role,
+content
+});
+
+saveChats();
+renderHistory();
+}
+
+
+
+async function sendMessage(){
+
+const input=
+document.getElementById(
+'user-input'
+);
+
+const question=
+input.value.trim();
+
+if(!question) return;
+
+appendMessage(
+'user',
+question
+);
+
+updateCurrentChat(
+'user',
+question
+);
+
+input.value='';
+
+let temp=
+appendMessage(
+'ai',
+"<span class='typing'>AI đang suy nghĩ...</span>"
+);
+
+try{
+
+const response=
+await fetch(
+'http://localhost:8000/api/ask',
+{
+method:'POST',
+headers:{
+'Content-Type':
+'application/json'
+},
+body:JSON.stringify({
+question:question
+})
+}
+);
+
+const data=
+await response.json();
+
+let html=
+formatResponse(
+data.answer,
+data.sources
+);
+
+temp.innerHTML=html;
+
+updateCurrentChat(
+'ai',
+html
+);
+
+}
+catch(e){
+temp.innerHTML=
+"Lỗi kết nối backend";
+}
+
+}
+
+
+
+function appendMessage(
+role,
+text
+){
+
+let wrap=
+document.createElement(
+'div'
+);
+
+wrap.className=
+'message-wrap '+
+(role==='user'
+?'user-wrap':'');
+
+let msg=
+document.createElement(
+'div'
+);
+
+msg.className=
+'message '+role;
+
+msg.innerHTML=text;
+
+wrap.appendChild(msg);
+
+chatContainer.appendChild(
+wrap
+);
+
+chatContainer.scrollTop=
+chatContainer.scrollHeight;
+
+return msg;
+
+}
+
+
+
+function formatResponse(
+answer,
+sources
+){
+
+let html=
+`<div>${answer}</div>`;
+
+if(
+sources &&
+sources.length>0
+){
+
+html+=
+`<div class='sources'>
+<b>Nguồn:</b>`;
+
+sources.forEach(
+s=>{
+html+=`
+<a target="_blank"
+href="${s.link}">
+🔗 ${s.title}
+</a>
+`;
+}
+);
+
+html+=`</div>`;
+}
+
+return html;
+}
+
+
+
+function handleKeyPress(e){
+if(e.key==="Enter"){
+sendMessage();
+}
+}
+
+
+if(chats.length){
+renderHistory();
+loadChat(
+chats[0].id
+);
+}
+else{
+newChat();
+}
+
+</script>
+
+</body>
+</html>
