@@ -1,28 +1,35 @@
-<img width="569" height="553" alt="image" src="https://github.com/user-attachments/assets/93d4eec9-8522-40d1-b9c7-59fb925cd231" />
+
 # Artical AI Agent
 
 Một ứng dụng RAG (Retrieval-Augmented Generation) nhỏ giúp truy vấn dữ liệu báo/khóa học bằng cách dùng FAISS làm vector DB và một LLM để sinh phản hồi.
 
 ## Mô tả
 
-<img width="569" height="553" alt="image" src="https://github.com/user-attachments/assets/ac5483b4-4fb1-4379-bbe7-fa35a9b4331d" />
+### Cấu trúc RAG AGENT 
+
+* <img width="569" height="553" alt="image" src="https://github.com/user-attachments/assets/93d4eec9-8522-40d1-b9c7-59fb925cd231" />
+
+* <img width="569" height="553" alt="image" src="https://github.com/user-attachments/assets/ac5483b4-4fb1-4379-bbe7-fa35a9b4331d" />
+
 ** RAG (Retrieval-Augmented Generation)
-   - Thế hệ tăng cường truy xuất (RAG) đã chuyển từ một khái niệm mới lạ thành tiêu chuẩn tối ưu để tạo ra các ứng dụng AI thông minh, đáng tin cậy và sẵn sàng cho sản xuất.
-   - RAG là yếu tố phân biệt các mô hình lạc hậu với các giải pháp tiên tiến. Nó tăng cường sức mạnh cho các mô hình LLM bằng cách kết nối chúng với các nguồn dữ liệu bên ngoài, thời gian thực, cho phép phản hồi chính xác, giàu ngữ cảnh mà không cần chu kỳ tinh chỉnh liên tục.
-   - RAG tác nhân: RAG thông thường thực hiện một lần truy xuất cho mỗi truy vấn. Một hệ thống tác nhân có thể định dạng lại truy vấn, tìm kiếm nhiều lần, hợp nhất kết quả hoặc quyết định rằng nó không cần truy xuất gì cả. Bài thực hành này mô phỏng vòng lặp quyết định đó bằng Python thuần túy.
+   * - Thế hệ tăng cường truy xuất (RAG) đã chuyển từ một khái niệm mới lạ thành tiêu chuẩn tối ưu để tạo ra các ứng dụng AI thông minh, đáng tin cậy và sẵn sàng cho sản xuất.
+   * - RAG là yếu tố phân biệt các mô hình lạc hậu với các giải pháp tiên tiến. Nó tăng cường sức mạnh cho các mô hình LLM bằng cách kết nối chúng với các nguồn dữ liệu bên ngoài, thời gian thực, cho phép phản hồi chính xác, giàu ngữ cảnh mà không cần chu kỳ tinh chỉnh liên tục.
+   * - RAG tác nhân: RAG thông thường thực hiện một lần truy xuất cho mỗi truy vấn. Một hệ thống tác nhân có thể định dạng lại truy vấn, tìm kiếm nhiều lần, hợp nhất kết quả hoặc quyết định rằng nó không cần truy xuất gì cả. Bài thực hành này mô phỏng vòng lặp quyết định đó bằng Python thuần túy.
 ** Chunking
-   - Token có độ dài cố định: Phương pháp cổ điển (ví dụ: 512–1024 token) vẫn là một nền tảng vững chắc.
+   * - Token có độ dài cố định: Phương pháp cổ điển (ví dụ: 512–1024 token) vẫn là một nền tảng vững chắc.
 ** Embeddings
-   - Các embedding chuyển đổi tài liệu và truy vấn của bạn thành các biểu diễn vector phong phú, tạo nên nền tảng của tìm kiếm ngữ nghĩa. Mô hình embedding phù hợp là vô cùng quan trọng. chúng tôi sử dụng embeding dưới dạng model
+   * - Các embedding chuyển đổi tài liệu và truy vấn của bạn thành các biểu diễn vector phong phú, tạo nên nền tảng của tìm kiếm ngữ nghĩa. Mô hình embedding phù hợp là vô cùng quan trọng. chúng tôi sử dụng embeding dưới dạng model
 ** Retrieval Tool
-   - FAISS: Dành cho tìm kiếm tương đồng siêu nhanh, được tăng tốc bằng GPU.
+   * - FAISS: Dành cho tìm kiếm tương đồng siêu nhanh, được tăng tốc bằng GPU.
+     
      <img width="1280" height="330" alt="image" src="https://github.com/user-attachments/assets/a9fd2386-5567-4fb2-bf77-35e8bc17d7b6" />
+	 
 ** LLMs for Generation
-   - Mistral & Mixtral: Nhẹ và hiệu năng cao, lý tưởng cho các trường hợp đặc biệt và các tác vụ nhạy cảm về tốc độ.
+   * - Mistral & Mixtral: Nhẹ và hiệu năng cao, lý tưởng cho các trường hợp đặc biệt và các tác vụ nhạy cảm về tốc độ.
 ** Query Optimization
-   - Cách bạn hiểu truy vấn của người dùng và cấu trúc lời nhắc sẽ ảnh hưởng trực tiếp đến chất lượng của kết quả cuối cùng.
+   * - Cách bạn hiểu truy vấn của người dùng và cấu trúc lời nhắc sẽ ảnh hưởng trực tiếp đến chất lượng của kết quả cuối cùng.
 ** Prompt Engineering Methods
-   - Tự hỏi/Phản ứng: Trao quyền cho mô hình thực hiện suy luận đa bước để trả lời các câu hỏi phức tạp.
+   * - Tự hỏi/Phản ứng: Trao quyền cho mô hình thực hiện suy luận đa bước để trả lời các câu hỏi phức tạp.
      
 <img width="894" height="73" alt="image" src="https://github.com/user-attachments/assets/46f719a0-4867-4e97-a828-fb26828feac8" />
 
