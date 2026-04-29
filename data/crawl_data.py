@@ -9,7 +9,7 @@ def crawl_vnexpress_news(
     limit=200,
     output_file=r"D:\artical-ai-agent\data\news_data.json"
 ):
-    rss_url = "https://baomoi.com/"
+    rss_url = "https://vnexpress.net/rss/tin-moi-nhat.rss"
 
     # Load dữ liệu cũ nếu có
     old_data = []

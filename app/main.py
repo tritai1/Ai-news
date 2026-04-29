@@ -7,7 +7,7 @@ app = FastAPI()
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"], # Cho phép tất cả các nguồn (để test local)
+    allow_origins=["*"], 
     allow_methods=["*"],
     allow_headers=["*"],
 )
