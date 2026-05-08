@@ -1,4 +1,7 @@
 # Article AI Agent — RAG-powered News & Knowledge Assistant
+<p align="center">
+  <img width="1856" height="974" alt="image" src="https://github.com/user-attachments/assets/fd55450f-069a-49a5-9d08-1992ad5e2e48" />
+</p>
 
 Một ứng dụng **RAG (Retrieval-Augmented Generation)** giúp truy vấn dữ liệu bài báo / khóa học bằng **FAISS Vector Database + LLM**, cung cấp câu trả lời có ngữ cảnh, có nguồn tham chiếu và hỗ trợ kiến trúc Agentic RAG.
 
