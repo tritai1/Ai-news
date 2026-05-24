@@ -478,9 +478,9 @@ appendMessage(
 
 try{
 
-const response=
+const response =
 await fetch(
-'http://localhost:8000/api/ask',
+'/api/ask',
 {
 method:'POST',
 headers:{
@@ -492,6 +492,7 @@ question:question
 })
 }
 );
+
 
 const data=
 await response.json();
