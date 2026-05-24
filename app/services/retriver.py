@@ -51,7 +51,9 @@ import os
 
 load_dotenv()
 
-DB_PATH = r"D:\artical-ai-agent\vector_db"
+# DB_PATH = r"D:\artical-ai-agent\vector_db"
+DB_PATH = "vector_db"
+
 
 #  dùng embedding 
 def get_embedding():
