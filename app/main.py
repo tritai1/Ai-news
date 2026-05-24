@@ -1,5 +1,8 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
+from fastapi.responses import FileResponse
+import os
 # import router SAU khi tạo app (tránh lỗi import vòng)
 from app.api.routes import router
 app = FastAPI()
@@ -14,4 +17,6 @@ app.add_middleware(
 app.include_router(router, prefix="/api")
 @app.get("/")
 def root():
-    return {"msg": "running"}
+    return FileResponse(
+        os.path.join("app", "frontEnd", "index.html")
+    )
