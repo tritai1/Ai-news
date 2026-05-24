@@ -58,7 +58,7 @@ DB_PATH = "vector_db"
 #  dùng embedding 
 def get_embedding():
     return GoogleGenerativeAIEmbeddings(
-    model="models/embedding-001"
+    model="text-embedding-004"
 )
 
 
