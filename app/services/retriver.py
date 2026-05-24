@@ -45,21 +45,19 @@
 
 from langchain_community.vectorstores import FAISS
 from langchain_text_splitters import RecursiveCharacterTextSplitter
-from langchain_google_genai import GoogleGenerativeAIEmbeddings
+from langchain_huggingface import HuggingFaceEmbeddings
 from dotenv import load_dotenv
 import os
 
 load_dotenv()
 
-# DB_PATH = r"D:\artical-ai-agent\vector_db"
-DB_PATH = "vector_db"
-
+DB_PATH = r"D:\artical-ai-agent\vector_db"
 
 #  dùng embedding 
 def get_embedding():
-    return GoogleGenerativeAIEmbeddings(
-    model="text-embedding-004"
-)
+    return HuggingFaceEmbeddings(
+        model_name="BAAI/bge-small-en-v1.5"
+    )
 
 
 def build_db(docs):

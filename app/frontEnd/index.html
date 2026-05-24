@@ -478,44 +478,20 @@ appendMessage(
 
 try{
 
-try{
-
-const response =
-await fetch('/api/ask',{
+const response=
+await fetch(
+'http://localhost:8000/api/ask',
+{
 method:'POST',
 headers:{
-'Content-Type':'application/json'
+'Content-Type':
+'application/json'
 },
 body:JSON.stringify({
 question:question
 })
-});
-
-console.log(response);
-
-const data =
-await response.json();
-
-console.log(data);
-
-let html =
-formatResponse(
-data.answer,
-data.sources
+}
 );
-
-temp.innerHTML=html;
-
-}
-catch(e){
-
-console.log("REAL ERROR:",e);
-
-temp.innerHTML=
-"ERROR: "+e;
-
-}
-
 
 const data=
 await response.json();
