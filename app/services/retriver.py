@@ -45,7 +45,7 @@
 
 from langchain_community.vectorstores import FAISS
 from langchain_text_splitters import RecursiveCharacterTextSplitter
-from langchain_huggingface import HuggingFaceEmbeddings
+from langchain_google_genai import GoogleGenerativeAIEmbeddings
 from dotenv import load_dotenv
 import os
 
@@ -55,9 +55,9 @@ DB_PATH = r"D:\artical-ai-agent\vector_db"
 
 #  dùng embedding 
 def get_embedding():
-    return HuggingFaceEmbeddings(
-        model_name="sentence-transformers/all-MiniLM-L6-v2"
-    )
+    return GoogleGenerativeAIEmbeddings(
+    model="models/embedding-001"
+)
 
 
 def build_db(docs):
